@@ -1,5 +1,4 @@
 from django.db import models
-from abc import abstractmethod
 import datetime
 from django.core.validators import MaxValueValidator, MinValueValidator
 
@@ -17,26 +16,6 @@ def year_choices():
 
 
 # Create your models here.
-class Venicle(type):
-    """
-    Абстрактный класс с общими для всех транспортных средств свойствами.
-    """
-
-    @abstractmethod
-    def move(self):
-        """
-        Переместить объект
-        """
-        pass
-
-    @abstractmethod
-    def speed(self):
-        """
-        Скорость транспортного средства
-        """
-        pass
-
-
 class Categories(models.Model):
     """
     Категории автомобилей
@@ -44,13 +23,14 @@ class Categories(models.Model):
     category = models.CharField(max_length=150)
     description = models.CharField(max_length=200)
 
+    def __str__(self):
+        return f'{self.category}'
 
-class Auto(models.Model):
+
+class Venicle(models.Model):
     """
     Модель Автомобиля
     """
-    __metaclass__ = Venicle
-
     mark = models.CharField(max_length=150)
     model = models.CharField(max_length=150)
     category = models.ForeignKey(Categories, on_delete=models.SET_NULL, null=True)
@@ -61,7 +41,6 @@ class Auto(models.Model):
     sts_number = models.CharField(max_length=30)
     sts_date = models.DateField()
     description = models.CharField(max_length=300, blank=True)
-    photo = models.ImageField()
 
     def __str__(self):
         return f'{self.mark} {self.model} {self.issue_year}'

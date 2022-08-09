@@ -1,14 +1,12 @@
 # coding: utf-8
 
 from rest_framework import serializers
-from .models import Auto, Categories
+from .models import Venicle, Categories
 
 
-class AutoSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-
+class VenicleSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Auto
+        model = Venicle
         fields = '__all__'
 
 

@@ -14,14 +14,21 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include, re_path
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+from endpoint.views import AutoAPIList, AutoAPIUpdate, AutoAPIDelete
 
-from endpoint.views import AutoAPIList, AutoAPICreate, AutoAPIUpdate, AutoAPIDelete
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auto/list', AutoAPIList.as_view()),
-    path('auto/create', AutoAPICreate.as_view()),
-    path('auto/update', AutoAPIUpdate.as_view()),
-    path('auto/delete', AutoAPIDelete.as_view()),
+    path('', include('endpoint.urls')),
+    path('api/user-auth/', include('rest_framework.urls')),
+    path('api/auto/list', AutoAPIList.as_view()),
+    path('api/auto/<int:pk>', AutoAPIUpdate.as_view()),
+    path('api/auto/delete/<int:pk>', AutoAPIDelete.as_view()),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('auth/', include('djoser.urls')),
+    re_path(r'^auth/', include('djoser.urls.authtoken')),
 ]
