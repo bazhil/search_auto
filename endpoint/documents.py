@@ -1,0 +1,53 @@
+# coding: utf-8
+from django_elasticsearch_dsl import fields
+from django_elasticsearch_dsl.documents import DocType
+from django_elasticsearch_dsl.registries import registry
+from elasticsearch_dsl import Integer, Document
+from .models import Categories, Venicle
+
+
+# TODO: проверить методы сделанные по аналогии: https://django.fun/tutorials/django-rest-framework-i-elasticsearch/
+
+@registry.register_document
+class CategoryDocument(Document):
+    id = fields.IntegerField()
+
+    class Index:
+        name = 'categories'
+        settings = {
+            'number_of_shards': 1,
+            'number_of_replicas': 0,
+        }
+
+    class Django:
+        model = Categories
+        fields = [
+            'category',
+            'description',
+        ]
+
+
+@registry.register_document
+class VenicleDocument(Document):
+    categories = fields.ObjectField(properties={
+        'category': fields.TextField(),
+        'description': fields.TextField(),
+    })
+    type = fields.TextField()
+
+    class Index:
+        name = 'venicles'
+        settings = {
+            'number_of_shards': 1,
+            'number_of_replicas': 0,
+        }
+
+    class Django:
+        model = Venicle
+        fields = [
+            'mark',
+            'model',
+            'category',
+            'issue_year',
+        ]
+

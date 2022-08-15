@@ -44,3 +44,5 @@ class Venicle(models.Model):
 
     def __str__(self):
         return f'{self.mark} {self.model} {self.issue_year}'
+
+

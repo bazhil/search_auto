@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'djoser',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
-    'endpoint.apps.EndpointConfig'
+    'endpoint.apps.EndpointConfig',
+    'django_elasticsearch_dsl'
 ]
 
 REST_FRAMEWORK = {
@@ -51,6 +52,13 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 100
+}
+
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'localhost:9200' #TODO: возможно нужен другой порт!
+    },
 }
 
 MIDDLEWARE = [
