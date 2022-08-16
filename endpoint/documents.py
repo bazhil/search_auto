@@ -51,3 +51,5 @@ class VenicleDocument(Document):
             'issue_year',
         ]
 
+VenicleDocument.init()
+CategoryDocument.init()

@@ -3,6 +3,7 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from .models import Venicle, Categories
+from .search_indexes import VenicleIndex
 from .serializers import VenicleSerializer
 
 from django.http.response import JsonResponse
@@ -10,6 +11,10 @@ from rest_framework.parsers import JSONParser
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
+from elasticsearch import Elasticsearch, RequestsHttpConnection
+from rest_framework_elasticsearch import es_views, es_filters, es_pagination
+
 
 # Create your views here.
 class AutoAPIList(generics.ListCreateAPIView):
@@ -87,3 +92,29 @@ def delete_venicle(request, pk):
     item.delete()
     return Response(status=status.HTTP_202_ACCEPTED)
 
+
+class VenicleView(es_views.ListElasticAPIView):
+    es_client = Elasticsearch(hosts=['elasticsearch:9200/'], connection_class=RequestsHttpConnection)
+    es_model = VenicleIndex
+    es_pagination_class = es_pagination.ElasticLimitOffsetPagination
+    es_filter_backends = (
+        es_filters.ElasticFieldsFilter,
+        es_filters.ElasticFieldsRangeFilter,
+        es_filters.ElasticSearchFilter,
+        es_filters.ElasticOrderingFilter,
+        es_filters.ElasticGeoBoundingBoxFilter
+    )
+    es_ordering = 'issue_year'
+    es_filter_fields = (
+        es_filters.ESFieldFilter('mark', 'mark'),
+    )
+    es_range_filter_fields = (
+        es_filters.ESFieldFilter('issue_year'),
+    )
+    es_search_fields = (
+        'mark',
+        'model',
+    )
+
+    es_geo_location_field = es_filters.ESFieldFilter('location')
+    es_geo_location_field_name = 'location'
