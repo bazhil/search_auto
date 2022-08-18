@@ -1,5 +1,5 @@
 asgiref==3.3.1
-Django
+Django~=3.1.14
 Pillow
 pytz==2021.1
 sqlparse==0.4.1
@@ -7,3 +7,4 @@ djangorestframework==3.13.1
 djangorestframework-simplejwt==4.8.0
 djoser
 channels
+config~=0.5.1

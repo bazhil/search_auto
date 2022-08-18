@@ -11,6 +11,17 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from elasticsearch import Elasticsearch, RequestsHttpConnection
+
+from rest_framework_elasticsearch import es_views, es_pagination, es_filters
+from .search_indexes import VenicleIndex
+
+
+es_client = Elasticsearch(
+    hosts=['elasticsearch:9200/'],
+    connection_class=RequestsHttpConnection
+)
+
 # Create your views here.
 class AutoAPIList(generics.ListCreateAPIView):
     queryset = Venicle.objects.all()
@@ -87,3 +98,25 @@ def delete_venicle(request, pk):
     item.delete()
     return Response(status=status.HTTP_202_ACCEPTED)
 
+
+class VenicleView(es_views.ListElasticAPIView):
+    es_client = es_client
+    es_model = VenicleIndex
+    es_pagination_class = es_pagination.ElasticLimitOffsetPagination
+
+    es_filter_backends = (
+        es_filters.ElasticFieldsFilter,
+        es_filters.ElasticSearchFilter,
+        es_filters.ElasticOrderingFilter,
+    )
+    es_ordering_fields = (
+        ("category", "category")
+    )
+    es_filter_fields = (
+        es_filters.ESFieldFilter('mark', 'mark'),
+        es_filters.ESFieldFilter('nodel', 'model')
+    )
+    es_search_fields = (
+        'model',
+        'model',
+    )
