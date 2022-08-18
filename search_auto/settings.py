@@ -180,3 +180,12 @@ SIMPLE_JWT = {
 }
 
 ASGI_APPLICATION = "drf_api.asgi.application"
+
+# Elasticsearch
+# https://django-elasticsearch-dsl.readthedocs.io/en/latest/settings.html
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'localhost:9200'
+    },
+}
