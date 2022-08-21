@@ -1,7 +1,6 @@
 # coding: utf-8
-from django_elasticsearch_dsl import fields
+from django_elasticsearch_dsl import fields, Document
 from django_elasticsearch_dsl.registries import registry
-from elasticsearch_dsl import Document
 from .models import Categories, Venicle
 from elasticsearch_dsl.connections import connections
 
@@ -33,6 +32,7 @@ class CategoryDocument(Document):
 
 @registry.register_document
 class VenicleDocument(Document):
+    # TODO: fix by article https://stackoverflow.com/questions/57635588/django-throwing-error-cannot-convert-model-field-category-to-an-elasticsearch-f
     categories = fields.ObjectField(properties={
         'category': fields.TextField(),
         'description': fields.TextField(),
