@@ -1,12 +1,16 @@
 # coding: utf-8
 from django_elasticsearch_dsl import fields
-from django_elasticsearch_dsl.documents import DocType
 from django_elasticsearch_dsl.registries import registry
-from elasticsearch_dsl import Integer, Document
+from elasticsearch_dsl import Document
 from .models import Categories, Venicle
+from elasticsearch_dsl.connections import connections
 
 
 # TODO: проверить методы сделанные по аналогии: https://django.fun/tutorials/django-rest-framework-i-elasticsearch/
+# TODO: или попробовать это: https://tamerlan.dev/how-to-integrate-elasticsearch-with-drf/
+
+# Define a default Elasticsearch client
+connections.create_connection(hosts=['localhost'])
 
 @registry.register_document
 class CategoryDocument(Document):

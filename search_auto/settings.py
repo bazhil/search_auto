@@ -61,6 +61,10 @@ ELASTICSEARCH_DSL = {
     },
 }
 
+ELASTICSEARCH_INDEX_NAMES = {
+    'venicles.model': 'venicles',
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

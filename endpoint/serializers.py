@@ -3,6 +3,7 @@
 from rest_framework import serializers
 from rest_framework_elasticsearch.es_serializer import ElasticModelSerializer
 
+from .documents import VenicleDocument
 from .models import Venicle, Categories
 from .search_indexes import VenicleIndex
 
@@ -21,6 +22,6 @@ class CategoriesSerializer(serializers.ModelSerializer):
 
 class ElasticVenicleSerializer(ElasticModelSerializer):
     class Meta:
-        model = Venicle
+        document = VenicleDocument
         es_model = VenicleIndex
         fields = ('pk', 'title', 'created_at', 'tags', 'body', 'is_published')
