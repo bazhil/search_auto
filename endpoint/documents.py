@@ -32,12 +32,12 @@ class CategoryDocument(Document):
 
 @registry.register_document
 class VenicleDocument(Document):
-    # TODO: fix by article https://stackoverflow.com/questions/57635588/django-throwing-error-cannot-convert-model-field-category-to-an-elasticsearch-f
+    # TODO: fix this https://exerror.com/importerror-cannot-import-name-six-from-django-utils/
     categories = fields.ObjectField(properties={
         'category': fields.TextField(),
         'description': fields.TextField(),
     })
-    type = fields.TextField()
+    # category = fields.TextField()
 
     class Index:
         name = 'venicles'
@@ -51,9 +51,6 @@ class VenicleDocument(Document):
         fields = [
             'mark',
             'model',
-            'category',
             'issue_year',
         ]
-
-VenicleDocument.init()
-CategoryDocument.init()
+        related_models = [Categories, ]
