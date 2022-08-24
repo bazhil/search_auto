@@ -4,6 +4,7 @@ from django.urls import path, include, re_path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 from endpoint.views import AutoAPIList, AutoAPIUpdate
 from endpoint.views import add_venicle, update_venicle, delete_venicle
+from search.views import PaginatedElasticSearchAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,4 +24,5 @@ urlpatterns = [
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
+    path('api/auto/search/<str:query>/', PaginatedElasticSearchAPIView.as_view())
 ]

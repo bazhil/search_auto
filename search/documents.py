@@ -1,7 +1,7 @@
 # coding: utf-8
 from django_elasticsearch_dsl import fields, Document
 from django_elasticsearch_dsl.registries import registry
-from .models import Categories, Venicle
+from endpoint.models import Categories, Venicle
 from elasticsearch_dsl.connections import connections
 
 
@@ -32,7 +32,6 @@ class CategoryDocument(Document):
 
 @registry.register_document
 class VenicleDocument(Document):
-    # TODO: fix this https://exerror.com/importerror-cannot-import-name-six-from-django-utils/
     categories = fields.ObjectField(properties={
         'category': fields.TextField(),
         'description': fields.TextField(),

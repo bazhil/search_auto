@@ -3,7 +3,7 @@
 from rest_framework import serializers
 from rest_framework_elasticsearch.es_serializer import ElasticModelSerializer
 
-from .documents import VenicleDocument
+from search.documents import VenicleDocument
 from .models import Venicle, Categories
 from .search_indexes import VenicleIndex
 
