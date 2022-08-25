@@ -14,16 +14,12 @@ from search.documents import VenicleDocument
 # TODO: попробуй https://github.com/veryacademy/django-ecommerce-project-v2/blob/main/part-6/ecommerce/search/views.py
 
 class PaginatedElasticSearchAPIView(APIView, LimitOffsetPagination):
+    # TODO: try use this: https://www.youtube.com/watch?v=2TZBs12dZzo
     serializer_class = VenicleSerializer
     document_class = VenicleDocument
 
     @abc.abstractmethod
     def generate_q_expression(self, query):
-        """This method should be overridden
-        and return a Q() expression."""
-    #     TODO: https://tamerlan.dev/how-to-integrate-elasticsearch-with-drf/
-    #      + https://django.fun/tutorials/django-rest-framework-i-elasticsearch/
-    #      + https://github.com/veryacademy/django-ecommerce-project-v2/blob/main/part-6/ecommerce/search/views.py
         q = Q(
             'multi_match',
             query=query,

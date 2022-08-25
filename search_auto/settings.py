@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'endpoint.apps.EndpointConfig',
     'search.apps.SearchConfig',
-    'django_elasticsearch_dsl'
+    'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf'
 ]
 
 REST_FRAMEWORK = {
@@ -58,7 +59,7 @@ REST_FRAMEWORK = {
 
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'localhost:9200' #TODO: возможно нужен другой порт!
+        'hosts': 'localhost:9200'
     },
 }
 

@@ -5,9 +5,6 @@ from endpoint.models import Categories, Venicle
 from elasticsearch_dsl.connections import connections
 
 
-# TODO: проверить методы сделанные по аналогии: https://django.fun/tutorials/django-rest-framework-i-elasticsearch/
-# TODO: или попробовать это: https://tamerlan.dev/how-to-integrate-elasticsearch-with-drf/
-
 # Define a default Elasticsearch client
 connections.create_connection(hosts=['localhost'])
 
