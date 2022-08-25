@@ -21,4 +21,4 @@ class VenicleIndex(Document):
     category = Text(fields={'raw': Keyword()})
 
     class Meta:
-        index = 'venicle'
+        index = 'venicles'

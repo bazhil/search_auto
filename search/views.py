@@ -7,12 +7,15 @@ from elasticsearch_dsl import Q
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView
 
+from endpoint.serializers import VenicleSerializer
+from search.documents import VenicleDocument
+
 
 # TODO: попробуй https://github.com/veryacademy/django-ecommerce-project-v2/blob/main/part-6/ecommerce/search/views.py
 
 class PaginatedElasticSearchAPIView(APIView, LimitOffsetPagination):
-    serializer_class = None
-    document_class = None
+    serializer_class = VenicleSerializer
+    document_class = VenicleDocument
 
     @abc.abstractmethod
     def generate_q_expression(self, query):
@@ -25,12 +28,10 @@ class PaginatedElasticSearchAPIView(APIView, LimitOffsetPagination):
             'multi_match',
             query=query,
             fields=[
-                'product.name'
-            ], fuzziness='auto') & Q(
-            'bool',
-            should=[
-                Q('match', is_default=True),
-            ], minimum_should_match=1)
+                'mark',
+                # 'model',
+                # 'issue_year',
+            ])
 
         return q
 
@@ -41,6 +42,7 @@ class PaginatedElasticSearchAPIView(APIView, LimitOffsetPagination):
             search = self.document_class.search().query(q)
             response = search.execute()
 
+            print(f'response = {response}')
             print(f'Found {response.hits.total.value} hit(s) for query: "{query}"')
 
             results = self.paginate_queryset(response, request, view=self)
