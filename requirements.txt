@@ -8,3 +8,7 @@ djangorestframework-simplejwt==4.8.0
 djoser
 channels
 config~=0.5.1
+django-elasticsearch-dsl-drf
+elasticsearch
+django-rest-elasticsearch
+django-elasticsearch-dsl
