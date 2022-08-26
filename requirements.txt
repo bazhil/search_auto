@@ -12,3 +12,7 @@ django-elasticsearch-dsl-drf
 elasticsearch
 django-rest-elasticsearch
 django-elasticsearch-dsl
+django-import-export
+tablib
+xlrd
+openpyxl

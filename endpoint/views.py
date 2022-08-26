@@ -15,7 +15,7 @@ from elasticsearch import Elasticsearch, RequestsHttpConnection
 
 from rest_framework_elasticsearch import es_views, es_pagination, es_filters
 from .search_indexes import VenicleIndex
-
+import pandas as pd
 
 es_client = Elasticsearch(
     hosts=['elasticsearch:9200/'],
@@ -97,4 +97,3 @@ def delete_venicle(request, pk):
     item = get_object_or_404(Venicle, pk=pk)
     item.delete()
     return Response(status=status.HTTP_202_ACCEPTED)
-
