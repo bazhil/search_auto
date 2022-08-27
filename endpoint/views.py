@@ -1,8 +1,10 @@
+import uuid
+
 from django.shortcuts import render, get_object_or_404
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
-from .models import Venicle, Categories
+from .models import Venicle, Categories, ExcelFileUpload
 from .serializers import VenicleSerializer
 
 from django.http.response import JsonResponse
@@ -10,12 +12,16 @@ from rest_framework.parsers import JSONParser
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 
 from rest_framework_elasticsearch import es_views, es_pagination, es_filters
 from .search_indexes import VenicleIndex
 import pandas as pd
+
+from search_auto.settings import BASE_DIR
+
 
 es_client = Elasticsearch(
     hosts=['elasticsearch:9200/'],
@@ -97,3 +103,35 @@ def delete_venicle(request, pk):
     item = get_object_or_404(Venicle, pk=pk)
     item.delete()
     return Response(status=status.HTTP_202_ACCEPTED)
+
+
+class ExportImportExcel(APIView):
+
+    def get(self, request):
+        venicles = Venicle.objects.all()
+        serializer = VenicleSerializer(venicles, many=True)
+        df = pd.DataFrame(serializer.data)
+        df.to_csv(f'static/excel/{uuid.uuid4()}.csv', encoding="UTF-8", index=False)
+
+        return Response({'status': 200})
+
+    def post(self, request):
+        excel_upload_obj = ExcelFileUpload.objects.create(excel_file_ulpoad=request.FILES['files'])
+        df = pd.read_csv(f'{BASE_DIR}/static/{excel_upload_obj.excel_file_ulpoad}')
+        for venicle in (df.values.to_list()):
+            try:
+                Venicle.objects.create(
+                    mark = venicle[0],
+                    model = venicle[1],
+                    category = venicle[2],
+                    reg_number = venicle[3],
+                    issue_year = venicle[4],
+                    vin = venicle[5],
+                    sts_number = venicle[6],
+                    sts_date = venicle[7],
+                    description = venicle[8],
+                )
+            except Exception as ex:
+                print(f'При загрузке данных из excel-файла произошла ошибка: {ex}')
+
+        return Response({'status': 200})

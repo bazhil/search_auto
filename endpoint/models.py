@@ -46,3 +46,5 @@ class Venicle(models.Model):
         return f'{self.mark} {self.model} {self.issue_year}'
 
 
+class ExcelFileUpload(models.Model):
+    excel_file_upload = models.FileField(upload_to='excel')
