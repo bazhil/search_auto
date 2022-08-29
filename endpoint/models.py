@@ -48,3 +48,7 @@ class Venicle(models.Model):
 
 class ExcelFileUpload(models.Model):
     excel_file_upload = models.FileField(upload_to='excel')
+
+
+class CsvFileUpload(models.Model):
+    csv_file_upload = models.FileField(upload_to='csv')

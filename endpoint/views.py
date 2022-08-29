@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
-from .models import Venicle, Categories, ExcelFileUpload
+from .models import Venicle, Categories, ExcelFileUpload, CsvFileUpload
 from .serializers import VenicleSerializer
 
 from django.http.response import JsonResponse, HttpResponse, FileResponse
@@ -118,9 +118,17 @@ class ExportImportExcel(APIView):
         return response
 
     def post(self, request):
-        # TODO: разобраться, почему не грузится Excel
-        excel_upload_obj = ExcelFileUpload.objects.create(excel_file_ulpoad=request.FILES['files'])
-        df = pd.read_csv(f'{BASE_DIR}/static/{excel_upload_obj.excel_file_ulpoad}')
+
+        # TODO:  составить запрос и приложить файл в поле files
+        excel_upload_obj = ExcelFileUpload.objects.create(excel_file_upload=request.FILES['files'])
+
+        print(f'excel_upload_obj = {excel_upload_obj}')
+
+        df = pd.read_excel(f'{BASE_DIR}/static/{excel_upload_obj.excel_file_ulpoad}')
+
+        print(f'df = {df}')
+
+        print(df)
         for venicle in (df.values.to_list()):
             try:
                 Venicle.objects.create(
@@ -136,5 +144,40 @@ class ExportImportExcel(APIView):
                 )
             except Exception as ex:
                 print(f'При загрузке данных из excel-файла произошла ошибка: {ex}')
+
+        return Response({'status': 200})
+
+
+class ExportImportCSV(APIView):
+
+    def get(self, request):
+        venicles = Venicle.objects.all()
+        serializer = VenicleSerializer(venicles, many=True)
+        df = pd.DataFrame(serializer.data)
+        file_path = f'static/csv/{uuid.uuid4()}.csv'
+        df.to_csv(file_path, encoding="UTF-8", index=False)
+        response = FileResponse(open(file_path, 'rb'))
+
+        return response
+
+    def post(self, request):
+        # TODO: составить корректный запрос для загрузки csv
+        csv_upload_obj = CsvFileUpload.objects.create(csv_file_upload=request.FILES['files'])
+        df = pd.read_csv(f'{BASE_DIR}/static/{csv_upload_obj.csv_file_upload}')
+        for venicle in (df.values.to_list()):
+            try:
+                Venicle.objects.create(
+                    mark=venicle[0],
+                    model=venicle[1],
+                    category=venicle[2],
+                    reg_number=venicle[3],
+                    issue_year=venicle[4],
+                    vin=venicle[5],
+                    sts_number=venicle[6],
+                    sts_date=venicle[7],
+                    description=venicle[8],
+                )
+            except Exception as ex:
+                print(f'При загрузке данных из csv-файла произошла ошибка: {ex}')
 
         return Response({'status': 200})
