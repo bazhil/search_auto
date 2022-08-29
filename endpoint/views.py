@@ -121,14 +121,10 @@ class ExportImportExcel(APIView):
 
         # TODO:  составить запрос и приложить файл в поле files
         excel_upload_obj = ExcelFileUpload.objects.create(excel_file_upload=request.FILES['files'])
-
-        print(f'excel_upload_obj = {excel_upload_obj}')
-
-        df = pd.read_excel(f'{BASE_DIR}/static/{excel_upload_obj.excel_file_ulpoad}')
+        df = pd.read_excel(f'{BASE_DIR}/static/{excel_upload_obj.excel_file_upload}')
 
         print(f'df = {df}')
 
-        print(df)
         for venicle in (df.values.to_list()):
             try:
                 Venicle.objects.create(
