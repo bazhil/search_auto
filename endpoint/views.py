@@ -119,9 +119,12 @@ class ExportImportExcel(APIView):
 
     def post(self, request):
 
-        # TODO:  составить запрос и приложить файл в поле files
+        # TODO:  составить запрос и приложить файл в поле files - https://django.fun/qa/4786/
         excel_upload_obj = ExcelFileUpload.objects.create(excel_file_upload=request.FILES['files'])
         df = pd.read_excel(f'{BASE_DIR}/static/{excel_upload_obj.excel_file_upload}')
+        # TODO: попробуй так
+        # df = pd.read_excel(request.FILES['files'])
+        # df = pd.read_excel(excel_upload_obj.excel_file_upload)
 
         print(f'df = {df}')
 
