@@ -118,17 +118,8 @@ class ExportImportExcel(APIView):
         return response
 
     def post(self, request):
-
-        # TODO:  составить запрос и приложить файл в поле files - https://django.fun/qa/4786/
-        excel_upload_obj = ExcelFileUpload.objects.create(excel_file_upload=request.FILES['files'])
-        df = pd.read_excel(f'{BASE_DIR}/static/{excel_upload_obj.excel_file_upload}')
-        # TODO: попробуй так
-        # df = pd.read_excel(request.FILES['files'])
-        # df = pd.read_excel(excel_upload_obj.excel_file_upload)
-
-        print(f'df = {df}')
-
-        for venicle in (df.values.to_list()):
+        df = pd.read_excel(request.FILES['files'])
+        for venicle in df.values:
             try:
                 Venicle.objects.create(
                     mark=venicle[0],
@@ -160,10 +151,8 @@ class ExportImportCSV(APIView):
         return response
 
     def post(self, request):
-        # TODO: составить корректный запрос для загрузки csv
-        csv_upload_obj = CsvFileUpload.objects.create(csv_file_upload=request.FILES['files'])
-        df = pd.read_csv(f'{BASE_DIR}/static/{csv_upload_obj.csv_file_upload}')
-        for venicle in (df.values.to_list()):
+        df = pd.read_csv(request.FILES['files'])
+        for venicle in df.values:
             try:
                 Venicle.objects.create(
                     mark=venicle[0],
