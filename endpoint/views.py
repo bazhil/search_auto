@@ -1,26 +1,20 @@
 import uuid
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
-from .models import Venicle, Categories, ExcelFileUpload, CsvFileUpload
+from .models import Venicle
 from .serializers import VenicleSerializer
 
-from django.http.response import JsonResponse, HttpResponse, FileResponse
-from rest_framework.parsers import JSONParser
+from django.http.response import FileResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from elasticsearch import Elasticsearch, RequestsHttpConnection
-
-from rest_framework_elasticsearch import es_views, es_pagination, es_filters
-from .search_indexes import VenicleIndex
 import pandas as pd
-
-from search_auto.settings import BASE_DIR
 
 
 es_client = Elasticsearch(
@@ -47,8 +41,6 @@ class AutoAPIUpdate(generics.ListCreateAPIView):
 #     serializer_class = VenicleSerializer
 #     permission_classes = (IsAdminUser, )
 
-
-# TODO: Добавить view с возможностью загружать и выгружать в csv, xlsx
 
 @api_view(['GET'])
 def view_venicles(request):
