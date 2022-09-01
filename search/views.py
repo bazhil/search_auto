@@ -11,10 +11,7 @@ from endpoint.serializers import VenicleSerializer
 from search.documents import VenicleDocument
 
 
-# TODO: попробуй https://github.com/veryacademy/django-ecommerce-project-v2/blob/main/part-6/ecommerce/search/views.py
-
 class PaginatedElasticSearchAPIView(APIView, LimitOffsetPagination):
-    # TODO: try use this: https://www.youtube.com/watch?v=2TZBs12dZzo
     serializer_class = VenicleSerializer
     document_class = VenicleDocument
 
@@ -38,7 +35,6 @@ class PaginatedElasticSearchAPIView(APIView, LimitOffsetPagination):
             search = self.document_class.search().query(q)
             response = search.execute()
 
-            print(f'response = {response}')
             print(f'Found {response.hits.total.value} hit(s) for query: "{query}"')
 
             results = self.paginate_queryset(response, request, view=self)
