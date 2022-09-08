@@ -114,9 +114,9 @@ class ExportImportExcel(APIView):
         for venicle in df.values:
             try:
                 Venicle.objects.create(
-                    mark=venicle[0],
-                    model=venicle[1],
-                    category=venicle[2],
+                    mark=venicle[1],
+                    model=venicle[2],
+                    category=venicle[9],
                     reg_number=venicle[3],
                     issue_year=venicle[4],
                     vin=venicle[5],
@@ -147,15 +147,15 @@ class ExportImportCSV(APIView):
         for venicle in df.values:
             try:
                 Venicle.objects.create(
-                    mark=venicle[0],
-                    model=venicle[1],
-                    category=venicle[2],
+                    mark=venicle[1],
+                    model=venicle[2],
+                    category=venicle[9],
                     reg_number=venicle[3],
                     issue_year=venicle[4],
                     vin=venicle[5],
                     sts_number=venicle[6],
                     sts_date=venicle[7],
-                    description=venicle[8],
+                    description=venicle[8]
                 )
             except Exception as ex:
                 print(f'При загрузке данных из csv-файла произошла ошибка: {ex}')
