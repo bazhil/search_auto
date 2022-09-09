@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
-from .models import Venicle
+from .models import Venicle, Categories
 from .serializers import VenicleSerializer
 
 from django.http.response import FileResponse
@@ -65,7 +65,12 @@ def view_venicles(request):
 
 @api_view(['POST'])
 def add_venicle(request):
+
+    print(f'request_data = {request.data}')
+
     venicle = VenicleSerializer(data=request.data)
+
+    print(f'venicle = {venicle}')
 
     # validating for already existing data
     if Venicle.objects.filter(**request.data).exists():
@@ -113,17 +118,21 @@ class ExportImportExcel(APIView):
         df = pd.read_excel(request.FILES['files'])
         for venicle in df.values:
             try:
-                Venicle.objects.create(
-                    mark=venicle[1],
-                    model=venicle[2],
-                    category=venicle[9],
-                    reg_number=venicle[3],
-                    issue_year=venicle[4],
-                    vin=venicle[5],
-                    sts_number=venicle[6],
-                    sts_date=venicle[7],
-                    description=venicle[8],
-                )
+                value = Venicle.objects.create(
+                        mark=venicle[1],
+                        model=venicle[2],
+                        reg_number=venicle[3],
+                        issue_year=venicle[4],
+                        vin=venicle[5],
+                        sts_number=venicle[6],
+                        sts_date=venicle[7],
+                        description=venicle[8],
+                        category=venicle[9]
+                    )
+                # TODO: для проверки гипотезы - убить!
+                # venicle_ser = VenicleSerializer(data=value)
+                # venicle_ser.save()
+                value.save()
             except Exception as ex:
                 print(f'При загрузке данных из excel-файла произошла ошибка: {ex}')
 
@@ -146,17 +155,18 @@ class ExportImportCSV(APIView):
         df = pd.read_csv(request.FILES['files'])
         for venicle in df.values:
             try:
-                Venicle.objects.create(
-                    mark=venicle[1],
-                    model=venicle[2],
-                    category=venicle[9],
-                    reg_number=venicle[3],
-                    issue_year=venicle[4],
-                    vin=venicle[5],
-                    sts_number=venicle[6],
-                    sts_date=venicle[7],
-                    description=venicle[8]
-                )
+                value = Venicle.objects.create(
+                        mark=venicle[1],
+                        model=venicle[2],
+                        reg_number=venicle[3],
+                        issue_year=venicle[4],
+                        vin=venicle[5],
+                        sts_number=venicle[6],
+                        sts_date=venicle[7],
+                        description=venicle[8],
+                        category=venicle[9]
+                    )
+                value.save()
             except Exception as ex:
                 print(f'При загрузке данных из csv-файла произошла ошибка: {ex}')
 
