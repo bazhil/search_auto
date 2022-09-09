@@ -65,13 +65,7 @@ def view_venicles(request):
 
 @api_view(['POST'])
 def add_venicle(request):
-
-    print(f'request_data = {request.data}')
-
     venicle = VenicleSerializer(data=request.data)
-
-    print(f'venicle = {venicle}')
-
     # validating for already existing data
     if Venicle.objects.filter(**request.data).exists():
         raise VenicleSerializer.ValidationError('This data already exists')
@@ -118,21 +112,23 @@ class ExportImportExcel(APIView):
         df = pd.read_excel(request.FILES['files'])
         for venicle in df.values:
             try:
-                value = Venicle.objects.create(
-                        mark=venicle[1],
-                        model=venicle[2],
-                        reg_number=venicle[3],
-                        issue_year=venicle[4],
-                        vin=venicle[5],
-                        sts_number=venicle[6],
-                        sts_date=venicle[7],
-                        description=venicle[8],
-                        category=venicle[9]
-                    )
-                # TODO: для проверки гипотезы - убить!
-                # venicle_ser = VenicleSerializer(data=value)
-                # venicle_ser.save()
-                value.save()
+                # TODO: Загружается!!! Следует разобраться почему падает ошибка: При загрузке данных из excel-файла произошла ошибка:
+                #  Failed lookup for key [categories] in <Venicle: BMW X7 2016>
+                data = VenicleSerializer(data={
+                    # 'id': venicle[0],
+                    'mark': venicle[1],
+                    'model': venicle[2],
+                    'reg_number': venicle[3],
+                    'issue_year': venicle[4],
+                    'vin': venicle[5],
+                    'sts_number': venicle[6],
+                    'sts_date': venicle[7],
+                    'description': venicle[8],
+                    'category': venicle[9]
+                })
+                if data.is_valid():
+                    data.save()
+
             except Exception as ex:
                 print(f'При загрузке данных из excel-файла произошла ошибка: {ex}')
 
@@ -153,20 +149,24 @@ class ExportImportCSV(APIView):
 
     def post(self, request):
         df = pd.read_csv(request.FILES['files'])
+        # TODO: Загружается!!! Следует разобраться почему падает ошибка: При загрузке данных из excel-файла произошла ошибка:
+        #  Failed lookup for key [categories] in <Venicle: BMW X7 2016>
         for venicle in df.values:
             try:
-                value = Venicle.objects.create(
-                        mark=venicle[1],
-                        model=venicle[2],
-                        reg_number=venicle[3],
-                        issue_year=venicle[4],
-                        vin=venicle[5],
-                        sts_number=venicle[6],
-                        sts_date=venicle[7],
-                        description=venicle[8],
-                        category=venicle[9]
-                    )
-                value.save()
+                data = VenicleSerializer(data={
+                    # 'id': venicle[0],
+                    'mark': venicle[1],
+                    'model': venicle[2],
+                    'reg_number': venicle[3],
+                    'issue_year': venicle[4],
+                    'vin': venicle[5],
+                    'sts_number': venicle[6],
+                    'sts_date': venicle[7],
+                    'description': venicle[8],
+                    'category': venicle[9]
+                })
+                if data.is_valid():
+                    data.save()
             except Exception as ex:
                 print(f'При загрузке данных из csv-файла произошла ошибка: {ex}')
 
